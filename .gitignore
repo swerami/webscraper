@@ -1,0 +1,7 @@
+venv/
+
+*.pyc
+
+data/*.db
+
+future.md
