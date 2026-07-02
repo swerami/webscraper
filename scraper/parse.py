@@ -1,5 +1,9 @@
 from bs4 import BeautifulSoup
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class Parser:
     def __init__(self, html):
