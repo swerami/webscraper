@@ -24,7 +24,13 @@ class ConnectToDB:
 
     def insert_articles(self, article_list):
         try:
-            query = "INSERT OR IGNORE INTO books (title, img, price, rating) VALUES (:title, :img, :price, :rating)"
+            query = """
+            INSERT INTO books (title, img, price, rating) 
+            VALUES (:title, :img, :price, :rating) 
+            ON CONFLICT(title) DO UPDATE SET 
+            price = excluded.price
+            where price != excluded.price
+            """
             db = self.get_connection()
             cursor = db.executemany(query, article_list)
             db.commit()
