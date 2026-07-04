@@ -1,6 +1,6 @@
 import sqlite3
 
-from config import db_url
+from config import default_db_url
 import os
 
 import logging
@@ -11,8 +11,11 @@ schemapath = os.getcwd() + "/db/schema.sql"
 
 
 class ConnectToDB:
+    def __init__(self, db_url=default_db_url):
+        self.db_url = db_url
+
     def get_connection(self):
-        return sqlite3.connect(db_url)
+        return sqlite3.connect(self.db_url)
 
     def init_db(self):
         connection = self.get_connection()
