@@ -1,3 +1,4 @@
+import argparse
 import logging
 import time
 
@@ -7,6 +8,19 @@ from scraper.fetch import FetchPage
 from scraper.parse import Parser
 from db.connection import ConnectToDB
 import config
+
+
+parser = argparse.ArgumentParser(description="Let's scrape books.toscrape!")
+parser.add_argument("--pages", type=int, default=50, help="How many pages to scrape?")
+parser.add_argument(
+    "--delay",
+    type=float,
+    default=0.5,
+    help="How much delay between fetching each page?",
+)
+
+args = parser.parse_args()
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,7 +41,7 @@ db.init_db()
 
 
 def fetch_articles():
-    for i in range(1, 51):
+    for i in range(1, args.pages + 1):
         try:
             response = fetch.fetch(f"/catalogue/page-{i}.html")
             if response.status_code == 404:
@@ -45,7 +59,7 @@ def fetch_articles():
             continue
 
         finally:
-            time.sleep(config.delay)
+            time.sleep(args.delay)
 
 
 fetch_articles()

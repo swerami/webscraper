@@ -9,8 +9,8 @@ class FetchPage:
     def __init__(self, url):
         self.url = url
 
-    def fetch(self, arg):
-        url = f"{self.url}{arg}"
+    def fetch(self, query):
+        url = f"{self.url}{query}"
         try:
             response = requests.get(url)
             response.encoding = "utf-8"
