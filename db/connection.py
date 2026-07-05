@@ -18,6 +18,9 @@ class ConnectToDB:
         return sqlite3.connect(self.db_url)
 
     def init_db(self):
+        folder = os.path.dirname(self.db_url)
+        if folder:
+            os.makedirs(folder, exist_ok=True)
         connection = self.get_connection()
         with open(schemapath) as f:
             schema = f.read()
