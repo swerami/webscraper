@@ -44,19 +44,25 @@ def fetch_articles():
     for i in range(1, args.pages + 1):
         try:
             response = fetch.fetch(f"/catalogue/page-{i}.html")
-            if response.status_code == 404:
-                break
-            else:
-                print(f"Downloading page {i}...")
+            print(f"Downloading page {i}...")
             parser = Parser(response.text)
             parsed_articles = parser.parse_articles()
 
             db.insert_articles(parsed_articles)
-        except requests.exceptions.RequestException as e:
+
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                break
+            logger.warning("HTTP %s on page %s, skipping", e.response.status_code, i)
             continue
 
-        except Exception as e:
+        except requests.exceptions.RequestException as e:
+            logger.warning("Network error on page %s, skipping: %s", i, e)
             continue
+
+        except Exception:
+            logger.exception("Unexpected error on page %s: ", i)
+            raise
 
         finally:
             time.sleep(args.delay)
